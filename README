@@ -1,0 +1,40 @@
+= ABOUT =
+
+fuse-7z is a FUSE file system that deals with 7z archives.
+
+At the moment, the design is in progress, see WIP.
+The current draft is based on lib7zip, but it may change.
+
+= AUTHOR =
+
+Jérôme Carretero
+  * E-mail:     cJ-7z@zougloub.eu
+  * XMPP:       cJ@zougloub.eu
+  * Homepage:   http://zougloub.eu
+
+= LICENSE =
+
+fuse-7z is licensed under the GNU GPL v3.
+Read LICENCE for more information.
+
+= USAGE =
+
+{{{
+$ mkdir -p ~/mnt/zip
+$ fuse-zip foobar.zip ~/mnt/zip
+(do something with the mounted file system)
+$ fusermount -u ~/mnt/zip
+}}}
+
+See the FUSE documentation for details.
+
+= WIP =
+
+Currently, the code is in a proof of concept stage.
+The current design contains a filesystem tree where all the nodes contain their full path.
+This is not optimal but seems OK for the moment.
+All the properties of all the files in the archive are read at initialization (so it can take some time to be done).
+
+Only reads are planned at the moment, writes will come later, if they come.
+I have no idea on how to perform optimal writes on big archives, and I don't know any real (sane) use case of writing in archives.
+
