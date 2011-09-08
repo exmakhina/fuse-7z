@@ -21,12 +21,17 @@ Read LICENCE for more information.
 
 = USAGE =
 
+Add the 7z.so parent directory in your LD_LIBRARY_PATH.
+Then proceed as usual when using a FUSE fs.
+
 {{{
-$ mkdir -p ~/mnt/zip
-$ fuse-zip foobar.zip ~/mnt/zip
+$ export LD_LIBRARY_PATH=/usr/lib/p7zip
+$ fuse-7z --automount foobar.zip ~/mount
 (do something with the mounted file system)
-$ fusermount -u ~/mnt/zip
+$ fusermount -u ~/mount
 }}}
+
+--automount makes the target folder if not present.
 
 See the FUSE documentation for details.
 
