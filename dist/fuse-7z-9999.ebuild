@@ -34,9 +34,9 @@ src_compile() {
 }
 
 src_install() {
-	dobin fuse-7z
-	insinto /usr/libexec/fuse-7z
-	doins build*/fuse-7z
+	dobin wrapper/fuse-7z
+	exeinto /usr/libexec/fuse-7z
+	doexe build/fuse-7z
 	dodoc README
 }
 
