@@ -484,7 +484,6 @@ private:
 public:
 	TestInStream(std::string const & fileName) : m_strFileName(fileName), m_strFileExt(L"7z") {
 
-		logger << "Opening " << fileName << Logger::endl;
 		m_pFile = fopen(fileName.c_str(), "rb");
 		if (m_pFile) {
 			fseek(m_pFile, 0, SEEK_END);
@@ -619,18 +618,20 @@ class Fuse7z_lib7zip : public Fuse7z {
 			throw runtime_error(ss.str());
 		}
 
-		if (0) {
+		
+		logger << "Supported extensions : ";
 		size_t size = exts.size();
 		for(size_t i = 0; i < size; i++) {
 			std::wstring ext = exts[i];
+			
 
 			for(size_t j = 0; j < ext.size(); j++) {
-				wprintf(L"%c", (char)(ext[j] &0xFF));
+				logger << (char)(ext[j] &0xFF);
 			}
+			logger << " ";
 
-			wprintf(L"\n");
 		}
-		}
+		logger << Logger::endl;
 
 
 		if (lib.OpenArchive(&stream, &archive)) {
