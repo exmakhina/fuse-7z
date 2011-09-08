@@ -35,8 +35,6 @@
 #define HMODULE void *
 #endif
 
-#include <iostream>
-
 /*-------------- const defines ---------------------------*/
 const UInt64 kMaxCheckStartPosition = 1 << 22;
 
@@ -706,9 +704,6 @@ bool C7ZipDllHandler::GetSupportedExts(WStringArray & exts)
 bool C7ZipDllHandler::OpenArchive(C7ZipInStream * pInStream, C7ZipArchive ** ppArchive)
 {
     wstring ext = pInStream->GetExt();
-
-    std::wcout << L"Ext: " << ext << std::endl;
-
 
     if (ext.length() == 0)
     {
