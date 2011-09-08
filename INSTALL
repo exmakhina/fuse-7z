@@ -1,0 +1,27 @@
+You need the following libraries:
+
+libfuse >= 2.8
+    http://fuse.sourceforge.net
+lib7zip >= 0.8
+    http://www.nih.at/libzip/
+
+The following tools are required:
+
+C++ compiler
+    g++ 4.2.3 or other modern C++ compiler
+pkg-config
+    http://pkg-config.freedesktop.org/
+waf
+	https://code.google.com/p/waf/
+
+To build fuse-7z do the following:
+
+$ waf configure build
+
+To install do:
+
+# cp build*/fuse-7z ~/bin/
+
+or something equivalent.
+
+

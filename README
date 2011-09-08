@@ -1,8 +1,10 @@
 = ABOUT =
 
-fuse-7z is a FUSE file system that deals with 7z archives.
+fuse-7z is a FUSE file system that uses the p7zip library to access:
+ - 7z archives
+ - all archive formats supported by 7-zip !!!
 
-At the moment, the design is in progress, see WIP.
+At the moment, the design is in progress, see NOTES.
 The current draft is based on lib7zip, but it may change.
 
 = AUTHOR =
@@ -28,13 +30,14 @@ $ fusermount -u ~/mnt/zip
 
 See the FUSE documentation for details.
 
-= WIP =
+= NOTES =
 
 Currently, the code is in a proof of concept stage.
-The current design contains a filesystem tree where all the nodes contain their full path.
-This is not optimal but seems OK for the moment.
-All the properties of all the files in the archive are read at initialization (so it can take some time to be done).
+This is not optimal but seems OK for the moment, to read archives.
+All the properties of all the files in the archive are read at initialization.
+But it happens to be quite fast.
 
-Only reads are planned at the moment, writes will come later, if they come.
-I have no idea on how to perform optimal writes on big archives, and I don't know any real (sane) use case of writing in archives.
+Only reads are planned at the moment, as the lib7zip library only supports them.
+Writes will come later, if they come : I have no idea on how to perform optimal writes on big archives,
+ and I don't know any real (sane) use case of writing in archives.
 
