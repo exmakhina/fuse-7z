@@ -16,7 +16,8 @@ waf
 
 To build fuse-7z do the following:
 
-$ waf configure build
+$ wget https://waf.googlecode.com/files/waf-1.6.7 -O waf
+$ python waf configure build
 
 To install do:
 
