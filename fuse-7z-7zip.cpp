@@ -668,17 +668,20 @@ class Fuse7z_lib7zip : public Fuse7z {
 						node->stat.st_size = size;
 					}
 
-					{ // TODO fix the bad times
-						unsigned long long time;
+					{
+						unsigned long long secpy, time, bias, gain;
+						secpy = 31536000;
+						gain = 10000000ULL;
+						bias = secpy * gain * 369 + secpy * 2438356ULL + 5184000ULL;
 						pArchiveItem->GetFileTimeProperty(lib7zip::kpidATime, time);
-						node->stat.st_atim.tv_sec = time / 1e8;
-						node->stat.st_atim.tv_nsec = time % int(1e8);
+						node->stat.st_atim.tv_sec = (time - bias)/gain;
+						node->stat.st_atim.tv_nsec = ((time - bias) % gain) * 100;
 						pArchiveItem->GetFileTimeProperty(lib7zip::kpidCTime, time);
-						node->stat.st_ctim.tv_sec = time / 1e8;
-						node->stat.st_ctim.tv_nsec = time % int(1e8);
+						node->stat.st_ctim.tv_sec = (time - bias)/gain;
+						node->stat.st_ctim.tv_nsec = ((time - bias) % gain) * 100;
 						pArchiveItem->GetFileTimeProperty(lib7zip::kpidMTime, time);
-						node->stat.st_mtim.tv_sec = time / 1e8;
-						node->stat.st_mtim.tv_nsec = time % int(1e8);
+						node->stat.st_mtim.tv_sec = (time - bias)/gain;
+						node->stat.st_mtim.tv_nsec = ((time - bias) % gain) * 100;
 					}
 				}
 				if ((i+1) % 10000 == 0) {
