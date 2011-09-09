@@ -9,7 +9,12 @@
 #include <cstring>
 
 class Node;
-class BigBuffer;
+
+class NodeBuffer {
+	public:
+	NodeBuffer() {}
+	virtual ~NodeBuffer() {}
+};
 
 struct ltstr {
     bool operator() (const char* s1, const char* s2) const {
@@ -30,12 +35,11 @@ class Node {
 		NEW
 	};
 
-	BigBuffer *buffer;
 	int open_count;
-
 	nodeState state;
 
 	public:
+	NodeBuffer *buffer;
 
 	char const *name;
 	std::string sname;

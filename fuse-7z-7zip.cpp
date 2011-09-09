@@ -215,8 +215,8 @@ class C7ZipArchive
 		NWindows::NCOM::CPropVariant prop;
 
 		if (m_pInArchive->GetArchiveProperty(p7zip_index, &prop) == 0 && prop.vt == VT_FILETIME) {
-			unsigned __int64 tmp_val = 0;
-			memmove(&tmp_val, &prop.filetime, sizeof(unsigned __int64));
+			unsigned long long int tmp_val = 0;
+			memmove(&tmp_val, &prop.filetime, sizeof(unsigned long long int));
 			val = tmp_val;
 			return true;
 		}
@@ -430,7 +430,7 @@ struct Fuse7z_pimp {
 			ss << "Could not load 7z handler";
 			throw runtime_error(ss.str());
 		}
-		//stream = new TestInStream(archiveName);
+		//stream = new Fuse7zInStream(archiveName);
 
 		// open archive(stream, archive);
 	}
@@ -447,34 +447,42 @@ struct Fuse7z_pimp {
 using namespace std;
 
 
-class TestOutStream : public C7ZipOutStream
+class Fuse7zOutStream : public C7ZipOutStream, public NodeBuffer
 {
+	private:
+	unsigned long long int position;
+
 	public:
 	vector<char> buffer;
-	unsigned long long int position;
-	TestOutStream() {
 
+	Fuse7zOutStream() : position(0) {
 	}
-	virtual ~TestOutStream() {
+
+	virtual ~Fuse7zOutStream() {
 	}
+
 	virtual int Write(const void *data, unsigned int size, unsigned int *processedSize) {
-		logger << "Write " << data << " size=" << size << processedSize << Logger::endl;
-		memcpy(buffer.data(), data, size);
+		logger << "Write " << data << " size=" << size << " processed " << processedSize << Logger::endl;
+		memcpy(&buffer[position], data, size);
 		*processedSize = size;
-		return 0;//throw runtime_error("Not implemented");
-	}
-	virtual int Seek(__int64 offset, unsigned int seekOrigin, unsigned __int64 *newPosition) {
-		position = seekOrigin;
-		//throw runtime_error("Not implemented");
+		position += size;
 		return 0;
 	}
-	virtual int SetSize(unsigned __int64 size) {
+
+	virtual int Seek(long long int offset, unsigned int seekOrigin, unsigned long long int *newPosition) {
+		logger << "Seek " << offset << " " << seekOrigin << Logger::endl;
+		position = seekOrigin;
+		return 0;
+	}
+
+	virtual int SetSize(unsigned long long int size) {
+		logger << "SetSize " << size << Logger::endl;
 		buffer.resize(size);
 		return 0;
 	}
 };
 
-class TestInStream : public C7ZipInStream
+class Fuse7zInStream : public C7ZipInStream
 {
 private:
 	FILE * m_pFile;
@@ -482,7 +490,7 @@ private:
 	std::wstring m_strFileExt;
 	int m_nFileSize;
 public:
-	TestInStream(std::string const & fileName) : m_strFileName(fileName), m_strFileExt(L"7z") {
+	Fuse7zInStream(std::string const & fileName) : m_strFileName(fileName), m_strFileExt(L"7z") {
 
 		m_pFile = fopen(fileName.c_str(), "rb");
 		if (m_pFile) {
@@ -519,7 +527,7 @@ public:
 		}
 	}
 
-	virtual ~TestInStream()
+	virtual ~Fuse7zInStream()
 	{
 		fclose(m_pFile);
 	}
@@ -598,7 +606,7 @@ const wchar_t * index_names[] = {
 class Fuse7z_lib7zip : public Fuse7z {
 	C7ZipLibrary lib;
 	C7ZipArchive * archive;
-	TestInStream stream;
+	Fuse7zInStream stream;
 	public:
 
 	Fuse7z_lib7zip(std::string const & filename, std::string const & cwd) : Fuse7z(filename, cwd), stream(filename) {
@@ -692,18 +700,22 @@ class Fuse7z_lib7zip : public Fuse7z {
 	
 	virtual void open(char const * path, Node * node) {
 		logger << "Opening file " << path << "(" << node->fullname() << ")" << Logger::endl;
+		Fuse7zOutStream * stream = new Fuse7zOutStream;
+		node->buffer = stream;
+		stream->SetSize(node->stat.st_size);
+		int id = node->id;
+		archive->Extract(id, stream);
 	}
 	virtual void close(char const * path, Node * node) {
 		logger << "Closing file " << path << "(" << node->fullname() << ")" << Logger::endl;
+		Fuse7zOutStream * stream = dynamic_cast<Fuse7zOutStream*>(node->buffer);
+		delete stream;
+		node->buffer = NULL;
 	}
 	virtual int read(char const * path, Node * node, char * buf, size_t size, off_t offset) {
 		logger << "Reading file " << path << "(" << node->fullname() << ") for " << size << " at " << offset << ", arch_id=" << node->id << Logger::endl;
-		int id = node->id;
-		TestOutStream s;
-		s.SetSize(node->stat.st_size);
-		archive->Extract(id, &s);
-		//s.Seek(0, 0, NULL);
-		memcpy(buf, &s.buffer [offset], size);
+		Fuse7zOutStream * stream = dynamic_cast<Fuse7zOutStream*>(node->buffer);
+		memcpy(buf, &stream->buffer[offset], size);
 		return size;
 	}
 
