@@ -4,6 +4,8 @@
 
 EAPI=3
 
+inherit git
+
 DESCRIPTION="Allows to mount 7-zip supported archives"
 HOMEPAGE="http://gitorious.org/fuse-7z"
 SRC_URI="https://waf.googlecode.com/files/waf-1.6.7"
@@ -13,8 +15,6 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 EGIT_REPO_URI="git://gitorious.org/fuse-7z/fuse-7z.git"
-
-inherit eutils git
 
 RESTRICT="primaryuri"
 
