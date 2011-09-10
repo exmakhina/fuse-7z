@@ -21,6 +21,7 @@ def configure(conf):
 	 msg="Checking for fuse flags",
 	 uselib_store="FUSE",
 	)
+	conf.env.CFLAGS += ["-std=c99"]
 	if 0:
 		conf.env.LIBPATH_P7ZIP = ["/usr/lib64/p7zip"]
 		conf.env.LIB_P7ZIP = ["7z"]
@@ -30,8 +31,6 @@ def configure(conf):
 		 "-L", conf.path.find_or_declare("lib7zip/Lib7Zip").bldpath(),
 		 "-Wl,-Bstatic", "-l","7zip", "-Wl,-Bdynamic",
 		]
-	conf.env.CXXFLAGS = ["-O3", "-g"]
-	conf.env.CFLAGS = ["-std=c99", "-O3", "-g" ]
 
 def build(bld):
 	p7z_root = bld.path.find_dir("p7zip_9.20.1")
