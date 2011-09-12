@@ -21,17 +21,18 @@ Read LICENCE for more information.
 
 = USAGE =
 
-Add the 7z.so parent directory in your LD_LIBRARY_PATH.
-Then proceed as usual when using a FUSE fs.
+The fuse-7z binary needs the directory containing 7z.so in $LD_LIBRARY_PATH.
+The shell wrapper wraps the call to fuse-7z to do that, and that's all.
+
+Mounting an archive with fuse-7z is like mounting another typical FUSE filesystem.  
 
 {{{
-$ export LD_LIBRARY_PATH=/usr/lib/p7zip
 $ fuse-7z --automount foobar.zip ~/mount
 (do something with the mounted file system)
 $ fusermount -u ~/mount
 }}}
 
---automount makes the target folder if not present.
+Note: --automount makes the target folder if not present.
 
 See the FUSE documentation for details.
 

@@ -64,26 +64,6 @@ class Node {
 	Node * find(char const *);
 	Node * insert(char * leaf);
 
-#if 0
-	void detach();
-	void rename(char *fname);
-
-	void rename_wo_reparenting(char *new_name);
-	int open();
-	int read(char *buf, size_t size, offset_t offset) const;
-	int write(const char *buf, size_t size, offset_t offset);
-	int close();
-	int save();
-	int truncate(offset_t offset);
-
-#if defined(FUSE7Z_WRITE)
-	inline bool isChanged() const {
-		return state == CHANGED || state == NEW;
-	}
-#endif
-
-	offset_t size() const;
-#endif
 };
 
 #endif // FUSE_7Z_NODE_H
