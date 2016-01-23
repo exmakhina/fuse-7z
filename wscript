@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 vi:noet
 
 program="fuse-7z"
 version="0.1"
@@ -22,6 +23,9 @@ def configure(conf):
 	 uselib_store="FUSE",
 	)
 	conf.env.CFLAGS += ["-std=c99"]
+
+	conf.env.LIB += ['dl']
+
 	if 0:
 		conf.env.LIBPATH_P7ZIP = ["/usr/lib64/p7zip"]
 		conf.env.LIB_P7ZIP = ["7z"]
