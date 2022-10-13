@@ -37,7 +37,7 @@ def configure(conf):
 		]
 
 def build(bld):
-	p7z_root = bld.path.find_dir("p7zip_9.20.1")
+	p7z_root = bld.path.get_src().find_dir("p7zip_9.20.1")
 
 	if 0: # when I'll have the courage to use p7zip directly
 		src = p7z_root.ant_glob("**/**.c")
@@ -71,7 +71,7 @@ def build(bld):
 	bld(
 	 target="lib7zip",
 	 features="cxx",
-	 source=[ bld.path.find_or_declare("lib7zip/Lib7Zip/%s" %x ) for x in ["7ZipArchive.cpp", "7ZipArchiveItem.cpp", "7zipLibrary.cpp", "HelperFuncs.cpp"]],
+	 source=[ bld.path.get_src().find_node("lib7zip/Lib7Zip/%s" %x ) for x in ["7ZipArchive.cpp", "7ZipArchiveItem.cpp", "7zipLibrary.cpp", "HelperFuncs.cpp"]],
 	 includes=inc,
 	 export_includes="lib7zip/Lib7Zip",
 	 use=[
